@@ -4,7 +4,6 @@ import time
 
 from crcmod import crcmod
 
-from main import temperature_control_system
 
 
 class CollectIndicator:
@@ -12,11 +11,12 @@ class CollectIndicator:
         self.tcp_sockets = {}
         self.upload_data = {}
         self.order = '01 03 00 00 00 02'  # 温湿度传感器查询指令
-        self.start_thread()
 
     def start_thread(self):
+        from main import temperature_control_system
         for sensor_name, sensor_config in temperature_control_system.sensor_config.items():
             # 按照温湿度传感器个数，创建线程，与设备建立连接
+            print(f"启动线程采集{sensor_name}传感器信息")
             threading.Thread(target=self.refresh_indicator, args=(sensor_name, sensor_config,)).start()
 
     def refresh_indicator(self, sensor_name, sensor_config):
@@ -88,4 +88,4 @@ class CollectIndicator:
                     # 发送温控指令
 
 
-collect_indicator = CollectIndicator()
+collect_instance = CollectIndicator()
